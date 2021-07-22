@@ -1,0 +1,40 @@
+package ua.com.alevel.food_supporter_bot.botapi.handlers.requests.impl.info;
+
+import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
+import ua.com.alevel.food_supporter_bot.botapi.handlers.requests.InputMessageHandler;
+import ua.com.alevel.food_supporter_bot.botapi.states.BotState;
+import ua.com.alevel.food_supporter_bot.service.message.ReplyMessagesService;
+
+import static ua.com.alevel.food_supporter_bot.util.Emojis.WINK;
+import static ua.com.alevel.food_supporter_bot.util.KeyboardMarkup.getInlineMessageButtons;
+
+@Component
+public class CommonInfoHandler implements InputMessageHandler {
+    private final ReplyMessagesService messagesService;
+
+    public CommonInfoHandler(ReplyMessagesService messagesService) {
+        this.messagesService = messagesService;
+    }
+
+    @Override
+    public SendMessage handle(Message message) {
+        return processUsersInput(message);
+    }
+
+    @Override
+    public BotState getHandlerName() {
+        return BotState.COMMON_INFO;
+    }
+
+    private SendMessage processUsersInput(Message inputMsg) {
+        long chatId = inputMsg.getChatId();
+        SendMessage replyToUser = (SendMessage) messagesService.getReplyMessage(chatId, "message.commonInfo", WINK);
+        replyToUser.setReplyMarkup(getInlineMessageButtons());
+        return replyToUser;
+    }
+}
+
+
+
